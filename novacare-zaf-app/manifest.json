@@ -27,7 +27,7 @@
     },
     {
       "name": "api_key",
-      "type": "password",
+      "type": "text",
       "required": true,
       "secure": true,
       "helpText": "Bearer token for the mock Epic EHR API. Stored encrypted; only used inside client.request() templates, never readable from app JS."

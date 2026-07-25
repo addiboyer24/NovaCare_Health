@@ -1,0 +1,22 @@
+{
+  "app": {
+    "name": "NovaCare Patient Appointments",
+    "short_description": "View patient appointments from the Epic EHR system in the ticket sidebar.",
+    "long_description": "Fetches and displays a patient's upcoming appointments from the mock Epic EHR API, using the ticket's Patient ID field. Lets agents add appointment details to the ticket as an internal note.",
+    "installation_instructions": "Enter your mock Epic EHR API's base URL and API key, plus the numeric ID of your ticket's Patient ID custom field, then click Install.",
+    "parameters": {
+      "api_base_url": {
+        "label": "API Base URL",
+        "helpText": "Base URL of your deployed mock Epic EHR API (no trailing slash)."
+      },
+      "api_key": {
+        "label": "API Key",
+        "helpText": "Bearer token for the mock Epic EHR API. Stored encrypted; only used inside client.request() templates, never readable from app JS."
+      },
+      "patient_id_field_id": {
+        "label": "Patient ID Field ID",
+        "helpText": "Numeric ID of your 'Patient ID' ticket field (from Admin Center > Objects and rules > Tickets > Fields). Replace the default with your real field ID."
+      }
+    }
+  }
+}

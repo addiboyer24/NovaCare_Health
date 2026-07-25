@@ -19,6 +19,7 @@
       error: document.getElementById("state-error"),
       empty: document.getElementById("state-empty"),
       loaded: document.getElementById("state-loaded"),
+      errorTitle: document.getElementById("error-title"),
       errorMessage: document.getElementById("error-message"),
       patientIdDisplay: document.getElementById("patient-id-display"),
       appointmentsList: document.getElementById("appointments-list"),
@@ -128,7 +129,8 @@
     }
   }
 
-  function showError(message) {
+  function showError(message, title) {
+    els.errorTitle.textContent = title || "Couldn't load appointments";
     els.errorMessage.textContent = message;
     showState("error");
   }
@@ -167,23 +169,22 @@
     });
     var noteText = lines.join("\n");
 
-    // Ensure the comment is added as an INTERNAL note, not a public reply —
-    // patient appointment/health data should never go out on a public
-    // ticket response. `ticket.comment.type` toggles the composer mode;
-    // verify this invoke name against your sandbox's ZAF SDK version, as
-    // Zendesk has changed comment-mode APIs across releases.
+    // IMPORTANT PLATFORM LIMITATION: ZAF does not expose a documented way
+    // to force the ticket composer into "internal note" mode from an app.
+    // client.invoke('ticket.comment.appendText', text) only inserts text
+    // into whichever mode the composer is CURRENTLY in — it does not (and
+    // cannot) switch modes itself. So this app can't guarantee the note
+    // lands as internal; it can only remind the agent to check.
     client
-      .invoke("ticket.comment.type", "internal")
-      .then(function () {
-        return client.invoke("ticket.comment.appendText", noteText);
-      })
+      .invoke("ticket.comment.appendText", noteText)
       .then(function () {
         els.addConfirmation.classList.remove("hidden");
+        els.addConfirmation.textContent =
+          "✓ Added to the comment box — confirm it's set to Internal note before submitting.";
       })
       .catch(function (err) {
         console.error("Failed to add note:", err);
-        els.errorMessage.textContent = "Couldn't add the note to this ticket. Try again.";
-        showState("error");
+        showError("Couldn't add the note to this ticket. Try again.", "Couldn't add note");
       });
   }
 
