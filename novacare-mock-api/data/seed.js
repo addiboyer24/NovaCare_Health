@@ -8,6 +8,12 @@ const patients = [
     patient_id: "PAT-001",
     dob: "1985-03-15",
     name: "Jane Smith",
+     insurance: {
+      plan_name: "BlueShield Gold PPO",
+      group_number: "GRP-88213",
+      coverage_status: "active",           // "active" | "inactive" | "not_found"
+      pre_authorization_required: false,
+    },
     appointments: [
       {
         appointment_id: "APT-101",
@@ -33,6 +39,12 @@ const patients = [
     patient_id: "PAT-002",
     dob: "1990-11-22",
     name: "Marcus Johnson",
+    insurance: {
+      plan_name: "UnitedHealthcare Silver HMO",
+      group_number: "GRP-77421",
+      coverage_status: "inactive",           // "active" | "inactive" | "not_found"
+      pre_authorization_required: true,
+    },
     appointments: [
       {
         appointment_id: "APT-201",
@@ -67,6 +79,12 @@ const patients = [
     patient_id: "PAT-003",
     dob: "1978-06-30",
     name: "Aisha Rahman",
+    insurance: {
+      plan_name: "Aetna Bronze PPO",
+      group_number: "GRP-66342",
+      coverage_status: "not_found",           // "active" | "inactive" | "not_found"
+      pre_authorization_required: false,
+    },
     appointments: [
       {
         appointment_id: "APT-301",
