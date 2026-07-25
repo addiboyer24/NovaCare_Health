@@ -14,6 +14,7 @@ const { simulateDowntime } = require("./middleware/simulateDowntime");
 const { rateLimiter } = require("./middleware/rateLimiter");
 const verifyIdentityRoutes = require("./routes/verifyIdentity");
 const appointmentsRoutes = require("./routes/appointments");
+const verifyInsuranceRoutes = require("./routes/verifyinsurance")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use(simulateDowntime);
 
 app.use(verifyIdentityRoutes);
 app.use(appointmentsRoutes);
+app.use(verifyInsuranceRoutes);
 
 // 404 fallback for anything not matched above.
 app.use((req, res) => {
