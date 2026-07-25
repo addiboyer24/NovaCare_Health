@@ -1,0 +1,154 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #2f3941;
+  background: #ffffff;
+}
+
+#app {
+  padding: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.state-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+
+.state-body {
+  margin: 0;
+  color: #68737d;
+  line-height: 1.4;
+}
+
+/* Loading spinner */
+#state-loading {
+  align-items: center;
+  padding: 24px 0;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #d8dcde;
+  border-top-color: #1f73b7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #1f73b7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #175a94;
+}
+
+.btn-secondary {
+  background: #e9ebed;
+  color: #2f3941;
+}
+
+.btn-secondary:hover {
+  background: #d8dcde;
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-icon {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  color: #68737d;
+  padding: 2px 6px;
+}
+
+.btn-icon:hover {
+  color: #2f3941;
+}
+
+/* Loaded state */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.patient-label {
+  font-weight: 600;
+}
+
+.appointments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.appointment-card {
+  border: 1px solid #d8dcde;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.appointment-date {
+  font-weight: 600;
+}
+
+.appointment-detail {
+  color: #68737d;
+  margin-top: 2px;
+}
+
+.appointment-type-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #eef6fc;
+  color: #1f73b7;
+  margin-top: 4px;
+}
+
+.add-confirmation {
+  color: #17703f;
+  margin: 8px 0 0;
+  font-size: 12px;
+}

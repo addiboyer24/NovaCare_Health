@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NovaCare Patient Appointments</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Loading state -->
+    <div id="state-loading" class="state hidden">
+      <div class="spinner"></div>
+      <p>Loading patient appointments…</p>
+    </div>
+
+    <!-- Missing patient ID state -->
+    <div id="state-missing-id" class="state hidden">
+      <p class="state-title">No Patient ID on this ticket</p>
+      <p class="state-body">
+        Add the patient's ID to the <strong>Patient ID</strong> field on this
+        ticket, then refresh below.
+      </p>
+      <button id="btn-retry-missing" class="btn btn-secondary">Refresh</button>
+    </div>
+
+    <!-- Error state -->
+    <div id="state-error" class="state hidden">
+      <p class="state-title">Couldn't load appointments</p>
+      <p class="state-body" id="error-message">
+        The Epic EHR system may be temporarily unavailable.
+      </p>
+      <button id="btn-retry-error" class="btn btn-primary">Retry</button>
+    </div>
+
+    <!-- Empty state (no appointments) -->
+    <div id="state-empty" class="state hidden">
+      <p class="state-title">No upcoming appointments</p>
+      <p class="state-body">This patient has no appointments on file.</p>
+    </div>
+
+    <!-- Success state -->
+    <div id="state-loaded" class="state hidden">
+      <div class="header-row">
+        <span class="patient-label">Patient <span id="patient-id-display"></span></span>
+        <button id="btn-refresh" class="btn-icon" title="Refresh">⟳</button>
+      </div>
+      <ul id="appointments-list" class="appointments-list"></ul>
+      <button id="btn-add-to-ticket" class="btn btn-primary btn-full">
+        Add to Ticket
+      </button>
+      <p id="add-confirmation" class="add-confirmation hidden">
+        ✓ Added as an internal note.
+      </p>
+    </div>
+  </div>
+
+  <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

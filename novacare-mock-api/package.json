@@ -1,0 +1,19 @@
+{
+  "name": "novacare-mock-ehr-api",
+  "version": "1.0.0",
+  "description": "Mock Epic EHR API for the NovaCare Health FDE take-home exercise",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  }
+}
