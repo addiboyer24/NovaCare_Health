@@ -5,4 +5,6 @@ Zendesk Instance: https://novacarehealth-53341.zendesk.com
 
 Agent Instance: https://static.zdassets.com/agent/assets/react/js/standalone.b9ec7570..html#key=033d7cbc-48f7-48d9-9a55-2737cc8b3ba4&botId=6a63ee9c570692b5fdb7c97b&dir=ltr&locale=en-us&origin=https%3A%2F%2Fnovacarehealth-53341.zendesk.com
 
+Support Email: support@novacarehealth-53341.zendesk.com
+
 Mock API Instance: https://novacare-health-k67j.onrender.com
