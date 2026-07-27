@@ -24,6 +24,23 @@ app.use(cors()); // ZAF app proxy + Action Builder both call cross-origin
 app.use(express.json());
 app.use(morgan("dev"));
 
+const NOVACARE_BANNER = `
+ _   _                  ____                 _   _            _ _   _     
+| \\ | | _____   ____ _ / ___|__ _ _ __ ___  | | | | ___  __ _| | |_| |__  
+|  \\| |/ _ \\ \\ / / _\` | |   / _\` | '__/ _ \\ | |_| |/ _ \\/ _\` | | __| '_ \\ 
+| |\\  | (_) \\ V / (_| | |__| (_| | | |  __/ |  _  |  __/ (_| | | |_| | | |
+|_| \\_|\\___/ \\_/ \\__,_|\\____\\__,_|_|  \\___| |_| |_|\\___|\\__,_|_|\\__|_| |_|
+                                                                          
+`;
+
+// Root route — a branded landing banner, not part of the EHR API surface.
+// Deliberately registered before auth/rate limiting/downtime simulation
+// (and also explicitly exempted in middleware/auth.js) so hitting the
+// bare URL in a browser or curl never returns a 401.
+app.get("/", (req, res) => {
+  res.type("text/plain").status(200).send(NOVACARE_BANNER);
+});
+
 // Health check — not part of the spec, but useful for Render/Railway/Fly
 // health checks and for a quick "is it alive" curl the morning of the
 // interview. Deliberately not behind auth or rate limiting.

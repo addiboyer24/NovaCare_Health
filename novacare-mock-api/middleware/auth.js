@@ -11,11 +11,12 @@
 //
 // The OAuth endpoints themselves (/authorize, /authorize/decision, /token)
 // are exempt — they're how a client obtains a token in the first place,
-// so they can't require one to be presented.
+// so they can't require one to be presented. The root path (/) is also
+// exempt — it just serves a branded landing banner, not EHR data.
 
 const API_KEY = process.env.API_KEY || "novacare-demo-key-2026";
 
-const UNAUTHENTICATED_PATHS = [/^\/authorize(\/.*)?$/, /^\/token$/];
+const UNAUTHENTICATED_PATHS = [/^\/authorize(\/.*)?$/, /^\/token$/, /^\/$/];
 
 function isExemptPath(path) {
   return UNAUTHENTICATED_PATHS.some((pattern) => pattern.test(path));
