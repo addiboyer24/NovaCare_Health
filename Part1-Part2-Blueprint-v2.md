@@ -76,6 +76,8 @@ same use case content into the Email agent.
   clinical specialist") before handoff so the patient isn't left with a
   silent gap while the routing happens.
 
+  When escalating always assign to the clinical support group.
+
 ### Use case 4: Insurance Verification
 
 - **Name:** `Insurance Verification`
@@ -191,79 +193,63 @@ changes should have a person confirm them.
 
 ## Part 2 — Action Flow: Appointment Rescheduling
 
-This section is largely channel-agnostic — one Action Flow (or one set of
-Custom Actions reused by both agents' procedures) serves both Messaging
-and Email, since both call the same mock API.
+---
 
-### Prerequisite: Custom Actions
+**Procedure: Reschedule Appointment**
 
-Before building the flow, define 4 Custom Actions in Admin Center → Apps
-and integrations → Actions → Custom actions (see prior message for exact
-input/output mapping per endpoint). These are the reusable building
-blocks both the Action Flow *and* each agent's procedure steps can call.
+**Purpose:** Guide a patient through rescheduling an existing appointment to a new date and time.
 
-### Trigger
+**Constraint — Required Inputs for All Action Flow Calls**
+Every call to a Reschedule Appointment action flow (Show Appointments, Show Slots, Finalize) must include, in addition to its step-specific parameters:
+- **Email** — collected once in Step 1, reused in every subsequent call, so the patient can be contacted if a flow fails.
+- **Conversation Context** — a summary of the conversation up to that point in the procedure, generated fresh before each call (see below). Used for troubleshooting/recovery if the flow fails.
 
-Ticket-based trigger, firing when both are true:
-- Tag `intent:appointment_reschedule` is present
-- Custom field `Patient ID` is populated
+**Constraint — Ticket Creation Handling**
+Any action flow call (Show Appointments, Show Slots, Finalize) may return a **ticket** (e.g., if it fails or needs manual follow-up), in addition to or instead of its normal output.
+- After every action flow call, check the response for a ticket.
+- If a ticket was created, tell the patient: that a ticket has been created on their behalf, the **ticket ID/number** (if provided), and that they may be contacted at the email they provided.
+- If the flow's normal output is also present alongside a ticket, relay both — the ticket notice and the available results/next step.
+- If the flow failed and only a ticket was returned (no usable data), inform the patient of the ticket and pause the procedure rather than proceeding to the next step.
 
-(Or invoked natively from the agent's procedure if your instance's
-action-builder/AI-agent integration supports that path directly — worth
-checking since it skips the ticket-tag round-trip.)
+**Constraint — No Persistence or Fabrication of Patient Data**
+- Do not store, retain, or carry over any patient data (e.g., name, email, date of birth, patient ID, appointment details) from previous interactions or sessions. Each procedure must rely solely on data collected within the current conversation.
+- Do not fabricate, infer, guess, or auto-fill any patient data field that has not been explicitly provided in the current context — this includes but is not limited to Patient ID, Date of Birth, email, and appointment identifiers.
+- If a required field is missing from the current context, ask the patient to provide it directly rather than substituting a placeholder, default, or previously seen value.
 
-### Step-by-step flow
+**Step 1 — Collect Patient Data**
+Ask the patient for their Patient ID, Date of Birth, and Email.
 
-**Step 1 — Identity Verification**
-- `POST {api_base_url}/verify-identity` with `patient_id`, `date_of_birth`
-- Branch: verified → Step 2; not verified / 404 → Error path A; 401/503/timeout → Error path B
+**Step 2 — Show Appointments**
+Summarize the conversation so far and set it as **Conversation Context**.
+Call **Reschedule Appointment (Show Appointments)** using the Patient ID, Date of Birth, Email, and Conversation Context. This flow verifies patient identity internally and returns the patient's upcoming appointments.
+Check the response for a ticket (see Ticket Creation Handling above).
+Present the list to the patient and ask them to select which appointment they want to reschedule. Capture the selected **Appointment ID**.
 
-**Step 2 — Appointment Lookup**
-- `GET {api_base_url}/patients/{patient_id}/appointments`
-- Branch: appointments found → Step 3; empty → Error path C; 503/timeout → Error path B
+**Step 3 — Collect Preferred Date Range**
+Ask the patient for a preferred date range (start date and end date) for the new appointment (always ask for both a start date and an end date).
 
-**Step 3 — Present Available Slots**
-- `GET {api_base_url}/appointments/available-slots?start_date=...&end_date=...`
-- Branch: slots found → wait for selection → Step 4; empty → Error path D
+**Step 4 — Show Slots**
+Update the **Conversation Context** to summarize the conversation up to this point (including the selected appointment and requested date range).
+Call **Reschedule Appointment (Show Slots)** using the **Appointment ID**, the requested date range, Email, and Conversation Context to retrieve available time slots.
+Check the response for a ticket (see Ticket Creation Handling above).
+Present the available slots to the patient and ask them to select one. Capture the selected **Date** and **Time**.
+- If no slots are available in the requested range, ask the patient to provide a different date range and repeat this step.
 
-**Step 4 — Confirm and Update**
-- Branch: patient confirms → `PUT {api_base_url}/appointments/{appointment_id}`; patient cancels → Error path E
-- Branch: update succeeds → Step 5; update fails (503/timeout) → Error path F
+**Step 5 — Confirm Before Finalizing**
+Summarize the change: the original appointment being rescheduled and the new selected Date and Time. Ask the patient to confirm this is correct.
+- If the patient confirms, proceed to Step 6.
+- If the patient does not confirm, return to Step 3 (or Step 4, if they just want a different slot within the same range) to make adjustments.
 
-**Step 5 — Ticket Update**
-- Internal note documenting old/new date+time, verification timestamp
-- Update tags: remove `intent:appointment_reschedule`, add `reschedule:completed`
+**Step 6 — Finalize Reschedule**
+Update the **Conversation Context** to summarize the conversation up to this point (including the confirmed selection).
+Call **Reschedule Appointment (Finalize)** with the **Appointment ID**, selected **Date**, selected **Time**, Email, and Conversation Context to confirm the change.
+Check the response for a ticket (see Ticket Creation Handling above).
 
-### Error paths
-
-| Path | Trigger | Patient-facing message | Ticket/agent action |
-|---|---|---|---|
-| A — Identity failed | verify-identity false or 404 | "We couldn't verify your identity with the information provided. A team member will follow up shortly." | Tag `escalation:identity_failed`, route Tier 2, note what was attempted |
-| B — EHR unavailable | Any step 503/timeout | "Our scheduling system is temporarily unavailable. We'll have someone reach out to help you reschedule." | Tag `escalation:system_unavailable`, route Tier 2, note failed step + timestamp |
-| C — No appointment found | appointments empty | "I don't see an upcoming appointment on file to reschedule. Let me connect you with someone who can help." | Route Tier 2 |
-| D — Fully booked | slots empty | "There are no open slots in the next two weeks. A scheduling specialist will follow up with more options." | Route Tier 2 |
-| E — Patient cancels | mid-flow cancellation | "No problem — reach out anytime if you'd like to reschedule." | No escalation, tag `reschedule:abandoned` |
-| F — Partial failure | lookup succeeded, update failed | "We found your appointment but hit an issue confirming the new time. A team member will finish this for you." | Route Tier 2, note both the found appointment AND attempted new slot |
-
-### Variable passing
-
-Carry `patient_id`, `dob` (consider discarding after Step 1 for data
-minimization), original `appointment_id`, and `selected_slot` through
-each step. On any escalation, dump current variable state into the
-internal note so a human doesn't have to ask the patient to repeat
-anything.
+**Step 7 — Confirm with Patient**
+Relay the confirmation returned by the Finalize flow to the patient, including the new appointment date and time (and any ticket notice from Step 6, if applicable).
 
 ---
 
-## Escalation & handoff rules (shared, both agents)
-
-- **Group routing:** Clinical Device Troubleshooting → Clinical
-  Specialists group. Everything else that escalates → Tier 2 Support.
-- **Context transfer on every handoff:** conversation summary (last 3-5
-  turns), identified intent, patient ID (if collected), and any
-  structured data already gathered (e.g., proposed new appointment slot).
-
----
 
 ## Interview talking points
 
