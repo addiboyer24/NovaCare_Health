@@ -106,6 +106,18 @@ const patients = [
       },
     ],
   },
+  {
+    patient_id: "PAT-004",
+    dob: "1995-02-08",
+    name: "Sarah Kim",
+    insurance: {
+      plan_name: "Cigna PPO",
+      group_number: "GRP-91045",
+      coverage_status: "active",           // "active" | "inactive" | "not_found"
+      pre_authorization_required: false,
+    },
+    appointments: [],
+  },
 ];
 
 // Available rescheduling slots — spread across the next two weeks,
@@ -119,6 +131,13 @@ const availableSlots = [
   { slot_id: "SLOT-06", date: "2026-08-03", time: "2:45 PM", provider: "Dr. Patel", location: "Main Campus - Room 110" },
   { slot_id: "SLOT-07", date: "2026-08-05", time: "9:30 AM", provider: "Dr. Chen", location: "Virtual" },
   { slot_id: "SLOT-08", date: "2026-08-06", time: "4:00 PM", provider: "Dr. Nguyen", location: "Main Campus - Room 118" },
+  { slot_id: "SLOT-09", date: "2026-08-07", time: "8:30 AM", provider: "Dr. Patel", location: "Main Campus - Room 110" },
+  { slot_id: "SLOT-10", date: "2026-08-08", time: "1:00 PM", provider: "Dr. Chen", location: "Virtual" },
+  { slot_id: "SLOT-11", date: "2026-08-10", time: "10:45 AM", provider: "Dr. Williams", location: "North Clinic - Room 302" },
+  { slot_id: "SLOT-12", date: "2026-08-11", time: "3:30 PM", provider: "Dr. Nguyen", location: "Main Campus - Room 118" },
+  { slot_id: "SLOT-13", date: "2026-08-12", time: "9:00 AM", provider: "Dr. Patel", location: "Main Campus - Room 110" },
+  { slot_id: "SLOT-14", date: "2026-08-13", time: "11:30 AM", provider: "Dr. Chen", location: "Virtual" },
+  { slot_id: "SLOT-15", date: "2026-08-14", time: "2:15 PM", provider: "Dr. Williams", location: "Main Campus - Room 204" },
 ];
 
 module.exports = { patients, availableSlots };
