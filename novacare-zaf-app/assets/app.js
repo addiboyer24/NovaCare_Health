@@ -89,9 +89,9 @@
     return client.metadata().then(function (metadata) {
       var baseUrl = metadata.settings.api_base_url;
 
-      // The Authorization header is templated with {{setting.api_key}}.
-      // ZAF resolves this server-side against the encrypted "secure"
-      // parameter before the request goes out — the raw key is never
+      // The Authorization header is templated with {{setting.access_token}}.
+      // ZAF resolves this server-side against the OAuth-managed access
+      // token before the request goes out — the raw token is never
       // present in this JS or visible in dev tools network logs.
       return client
         .request({
@@ -99,7 +99,7 @@
           type: "GET",
           secure: true,
           headers: {
-            Authorization: "Bearer {{setting.api_key}}",
+            Authorization: "Bearer {{setting.access_token}}",
           },
         })
         .then(function (response) {

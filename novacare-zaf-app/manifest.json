@@ -17,20 +17,25 @@
       }
     }
   },
+  "oauth": {
+    "client_id": "novacare-demo-client-id",
+    "client_secret": "novacare-demo-client-secret",
+    "authorize_uri": "https://novacare-health-k67j.onrender.com/authorize",
+    "access_token_uri": "https://novacare-health-k67j.onrender.com/token",
+    "scope": "demo"
+  },
   "parameters": [
     {
       "name": "api_base_url",
       "type": "text",
       "required": true,
-      "default": "https://novacare-mock-api.onrender.com",
+      "default": "https://novacare-health-k67j.onrender.com",
       "helpText": "Base URL of your deployed mock Epic EHR API (no trailing slash)."
     },
     {
-      "name": "api_key",
-      "type": "text",
-      "required": true,
-      "secure": true,
-      "helpText": "Bearer token for the mock Epic EHR API. Stored encrypted; only used inside client.request() templates, never readable from app JS."
+      "name": "access_token",
+      "type": "oauth",
+      "helpText": "OAuth access token for the mock Epic EHR API. Obtained automatically via the Authorization Code flow when the app is installed; never readable from app JS."
     },
     {
       "name": "patient_id_field_id",
