@@ -15,6 +15,7 @@ const { rateLimiter } = require("./middleware/rateLimiter");
 const verifyIdentityRoutes = require("./routes/verifyIdentity");
 const appointmentsRoutes = require("./routes/appointments");
 const verifyInsuranceRoutes = require("./routes/verifyinsurance")
+const oauth = require("./routes/oauth")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,10 +36,13 @@ app.get("/health", (req, res) => {
 app.use(rateLimiter);
 app.use(requireAuth);
 app.use(simulateDowntime);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(verifyIdentityRoutes);
 app.use(appointmentsRoutes);
 app.use(verifyInsuranceRoutes);
+app.use(oauth);
 
 // 404 fallback for anything not matched above.
 app.use((req, res) => {
