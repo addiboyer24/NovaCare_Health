@@ -8,6 +8,11 @@ I have a problem with my glucose monitor, it's making a weird noise when I prick
 Insurance Verification.
 I need to verify my insurance for an upcoming appointment with NovaCare Health.
 
+
+Patient Id: PAT-004
+
+Date of Birth: 1995-02-08
+
 Appointment Scheduling.
 I need to reschedule my appointment with NovaCare Health.
 
@@ -25,6 +30,10 @@ should I do?
 
 Insurance Verification.
 I need to verify my insurance for an upcoming appointment with NovaCare Health.
+
+Patient Id: PAT-004
+
+Date of Birth: 1995-02-08
 
 Appointment Scheduling.
 N/A.
