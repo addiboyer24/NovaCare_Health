@@ -33,50 +33,12 @@ const NOVACARE_BANNER = `
                                                                           
 `;
 
-const SECURITY_BANNER = `
-                 ,-----------,
-                /  ,-------,  \\
-               /  /         \\  \\
-              |  |           |  |
-              |  |           |  |
-               \\  \\         /  /
-                \\  '-------'  /
-              ,--\\___________/--,
-             /                   \\
-            |  o               o  |
-            |                     |
-            |       ,-----,       |
-            |      /   o   \\      |
-            |     |   / \\   |     |
-            |     |  /   \\  |     |
-            |      \\_______/      |
-            |                     |
-            |  o               o  |
-             \\_____________________/
-
- #### ######  #### #   # ####  ###### ####      #   # ##### ##### #   #
-#     #     #     #   # #   # #     #   #     #   #   #     #   #   #
-#     #     #     #   # #   # #     #   #     #   #   #     #   #   #
- ###  #####  #     #   # ####  #####  #   #     # # #   #     #   #####
-    # #     #     #   # # #   #     #   #     # # #   #     #   #   #
-    # #     #     #   # #  #  #     #   #     ## ##   #     #   #   #
-####  ######  ####  ###  #   # ###### ####      #   # #####   #   #   #
-
-####   ###  #   # ###### ####       ###   ###  #   # ##### #   #   ###
-#   # #   #  # #  #     #   #     #   # #   # #   #   #   #   # #   #
-#   # #   #   #   #     #   #     #   # #   # #   #   #   #   #     #
-####  #   #   #   #####  ####      #   # ##### #   #   #   #####    #
-#   # #   #   #   #     # #       #   # #   # #   #   #   #   #    #
-#   # #   #   #   #     #  #      #   # #   # #   #   #   #   #   #
-####   ###    #   ###### #   #      ###  #   #  ###    #   #   # #####
-`;
-
 // Root route — a branded landing banner, not part of the EHR API surface.
 // Deliberately registered before auth/rate limiting/downtime simulation
 // (and also explicitly exempted in middleware/auth.js) so hitting the
 // bare URL in a browser or curl never returns a 401.
 app.get("/", (req, res) => {
-  res.type("text/plain").status(200).send(NOVACARE_BANNER + SECURITY_BANNER);
+  res.type("text/plain").status(200).send(NOVACARE_BANNER);
 });
 
 // Health check — not part of the spec, but useful for Render/Railway/Fly
