@@ -127,9 +127,11 @@ router.post("/authorize/decision", (req, res) => {
 
 // POST /token
 // Body: { grant_type, code, redirect_uri, client_id, client_secret } for the
-// authorization_code grant, or { grant_type: "refresh_token", refresh_token,
-// client_id, client_secret } for a refresh. client_id/client_secret may also
-// be supplied via HTTP Basic Auth instead of the body.
+// authorization_code grant, { grant_type: "refresh_token", refresh_token,
+// client_id, client_secret } for a refresh, or { grant_type:
+// "client_credentials", client_id, client_secret, scope } for the client
+// credentials grant. client_id/client_secret may also be supplied via HTTP
+// Basic Auth instead of the body.
 // Always issues the static demo token: novacare-demo-key-2026
 router.post("/token", (req, res) => {
   let {
@@ -139,6 +141,7 @@ router.post("/token", (req, res) => {
     client_id: clientId,
     client_secret: clientSecret,
     refresh_token: refreshToken,
+    scope,
   } = req.body || {};
 
   const authHeader = req.headers["authorization"];
@@ -190,6 +193,17 @@ router.post("/token", (req, res) => {
       });
     }
     // accept any non-empty refresh token for this mock
+  } else if (grantType === "client_credentials") {
+    // Client already authenticated above via client_id/client_secret (body
+    // or Basic auth). Per RFC 6749 §4.4, no refresh token is issued for this
+    // grant since the client can simply request a new token using its own
+    // credentials again.
+    return res.status(200).json({
+      access_token: ACCESS_TOKEN,
+      token_type: "Bearer",
+      expires_in: 3600,
+      scope: scope || "demo",
+    });
   } else {
     return res.status(400).json({
       error: "unsupported_grant_type",
