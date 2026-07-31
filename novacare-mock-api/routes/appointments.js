@@ -72,8 +72,6 @@ router.get("/appointments/available-slots", (req, res) => {
   });
 });
 
-const { patients, availableSlots } = require("../data/seed");
-
 // PUT /appointments/:id
 // Body: { date, time } — the new date/time for the appointment.
 // Reschedules the appointment (searches across all patients) and returns
