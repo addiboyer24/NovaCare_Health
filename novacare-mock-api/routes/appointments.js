@@ -23,18 +23,49 @@ router.get("/patients/:id/appointments", (req, res) => {
 
 // GET /appointments/available-slots?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
 // Returns available rescheduling slots, optionally filtered to a date range.
+
+function isValidDateString(value) {
+  // Must match YYYY-MM-DD exactly
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+  // Must represent a real calendar date (rejects 2024-13-45, 2024-02-30, etc.)
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+}
+
 router.get("/appointments/available-slots", (req, res) => {
   const { start_date, end_date } = req.query;
 
-  let slots = availableSlots;
+  if (start_date && !isValidDateString(start_date)) {
+    return res.status(400).json({
+      error: "start_date must be a valid date in YYYY-MM-DD format",
+    });
+  }
 
+  if (end_date && !isValidDateString(end_date)) {
+    return res.status(400).json({
+      error: "end_date must be a valid date in YYYY-MM-DD format",
+    });
+  }
+
+  if (start_date && end_date && start_date >= end_date) {
+    return res.status(400).json({
+      error: "start_date must be before end_date",
+    });
+  }
+
+  let slots = availableSlots;
   if (start_date) {
     slots = slots.filter((s) => s.date >= start_date);
   }
   if (end_date) {
     slots = slots.filter((s) => s.date <= end_date);
   }
-
   return res.status(200).json({
     slots,
     count: slots.length,
