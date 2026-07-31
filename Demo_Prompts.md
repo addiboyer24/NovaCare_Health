@@ -1,0 +1,53 @@
+# NovaCare Health — Agent Test Cases
+
+## Messaging Agent
+
+### Billing Questions
+- What payment types does NovaCare Health accept?
+
+### Device Troubleshooting
+- I have a problem with my glucose monitor, it's making a weird noise when I prick my finger...
+
+### Insurance Verification
+
+**Happy Path**
+- Prompt: I need to verify my insurance for an upcoming appointment with NovaCare Health.
+- Patient ID: `PAT-004`
+- Date of Birth: `1995-02-08`
+
+**Sad Path**
+- Patient ID: `PAT-001`
+- Date of Birth: `1996-04-25`
+
+### Appointment Scheduling
+- Prompt: I need to reschedule my appointment with NovaCare Health.
+
+**Happy Path**
+- Patient ID: `PAT-002`
+- Date of Birth: `1990-11-22`
+
+**Sad Path**
+- Patient ID: `PAT-004`
+- Date of Birth: `1995-02-08`
+
+---
+
+## Email Agent
+
+**Prerequisites:**
+- Use `addison.boyer@mso.umt.edu` (⚠️ gotcha: if you use the same email as the agent, it won't send an automated reply)
+- Send to: `support@novacarehealth-53341.zendesk.com`
+
+### Billing Questions
+- What number can I call for billing related questions?
+
+### Device Troubleshooting
+- My blood pressure monitor stopped working and I'm at risk for heart attack, what should I do?
+
+### Insurance Verification
+- Prompt: I need to verify my insurance for an upcoming appointment with NovaCare Health.
+- Patient ID: `PAT-004`
+- Date of Birth: `1995-02-08`
+
+### Appointment Scheduling
+- Redirect to Reschedule through Chat.
