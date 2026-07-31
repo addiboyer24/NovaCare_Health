@@ -4,6 +4,7 @@
     "name": "NovaCare Health",
     "email": "fde@novacarehealth.example.com"
   },
+  "icon": "assets/icon.png",
   "defaultLocale": "en",
   "version": "2.0",
   "frameworkVersion": "2.0",
