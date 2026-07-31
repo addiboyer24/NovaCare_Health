@@ -72,17 +72,25 @@ router.get("/appointments/available-slots", (req, res) => {
   });
 });
 
+const { patients, availableSlots } = require("../data/seed");
+
 // PUT /appointments/:id
 // Body: { date, time } — the new date/time for the appointment.
 // Reschedules the appointment (searches across all patients) and returns
 // a confirmation payload.
 router.put("/appointments/:id", (req, res) => {
   const { date, time } = req.body || {};
-
   if (!date || !time) {
     return res.status(400).json({
       error: "bad_request",
       message: "Both date and time are required to reschedule.",
+    });
+  }
+
+  if (!isValidDateString(date)) {
+    return res.status(400).json({
+      error: "bad_request",
+      message: "date must be a valid date in YYYY-MM-DD format.",
     });
   }
 
@@ -96,7 +104,6 @@ router.put("/appointments/:id", (req, res) => {
       break;
     }
   }
-
   if (!target) {
     return res.status(404).json({
       error: "not_found",
@@ -104,9 +111,31 @@ router.put("/appointments/:id", (req, res) => {
     });
   }
 
+  // Appointment must be in a reschedulable state
+  if (target.status === "cancelled" || target.status === "completed") {
+    return res.status(409).json({
+      error: "invalid_appointment_state",
+      message: `Appointment '${req.params.id}' is '${target.status}' and cannot be rescheduled.`,
+    });
+  }
+
+  // The requested date/time must correspond to an actual open slot
+  const slotIndex = availableSlots.findIndex(
+    (s) => s.date === date && s.time === time
+  );
+  if (slotIndex === -1) {
+    return res.status(409).json({
+      error: "invalid_slot",
+      message: `No available slot exists for ${date} at ${time}.`,
+    });
+  }
+
   target.date = date;
   target.time = time;
   target.status = "rescheduled";
+
+  // Remove the now-booked slot so it can't be double-booked
+  availableSlots.splice(slotIndex, 1);
 
   return res.status(200).json({
     confirmation: true,
