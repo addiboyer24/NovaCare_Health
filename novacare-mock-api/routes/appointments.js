@@ -116,7 +116,7 @@ router.put("/appointments/:id", (req, res) => {
       message: `Appointment '${req.params.id}' is '${target.status}' and cannot be rescheduled.`,
     });
   }
-
+/*
   // The requested date/time must correspond to an actual open slot
   const slotIndex = availableSlots.findIndex(
     (s) => s.date === date && s.time === time
@@ -127,13 +127,13 @@ router.put("/appointments/:id", (req, res) => {
       message: `No available slot exists for ${date} at ${time}.`,
     });
   }
-
+*/
   target.date = date;
   target.time = time;
   target.status = "rescheduled";
 
   // Remove the now-booked slot so it can't be double-booked
-  availableSlots.splice(slotIndex, 1);
+  // availableSlots.splice(slotIndex, 1);
 
   return res.status(200).json({
     confirmation: true,
