@@ -3,9 +3,6 @@ const { patients } = require("../data/seed");
 
 const router = express.Router();
 
-date_of_birth:
-
-javascript
 function isValidDateString(value) {
   // Must match YYYY-MM-DD exactly
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
